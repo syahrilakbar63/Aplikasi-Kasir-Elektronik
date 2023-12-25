@@ -29,7 +29,7 @@ Untuk menampilkan total harga, klik tombol "Total Harga".
 
 Untuk menginstal aplikasi ini, cukup jalankan perintah berikut di terminal:
 
-
+```
 npm install
 ```
 
@@ -37,7 +37,7 @@ Setelah itu, jalankan aplikasi dengan perintah berikut:
 
 ```
 npm start
-
+```
 
 Aplikasi akan berjalan di port 3000.
 
