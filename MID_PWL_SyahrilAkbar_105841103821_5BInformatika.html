@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aplikasi Kasir Elektronik</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      margin-top: 20px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    .btn-warning {
+      background-color: #ffc107;
+      border-color: #ffc107;
+    }
+
+    .btn-warning:hover {
+      background-color: #e0a800;
+      border-color: #e0a800;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+      border-color: #c82333;
+    }
+
+    @media (max-width: 768px) {
+      .col-md-6 {
+        width: 100%;
+      }
+    }
+
+    .daftar-barang {
+      margin-top: 20px;
+    }
+
+    .total-harga {
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/react@17/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+  <script type="text/babel">
+    class Barang extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          nama: '',
+          harga: '',
+          stok: '',
+        };
+      }
+
+      handleInputChange = (event) => {
+        this.setState({
+          [event.target.id]: event.target.value,
+        });
+      };
+
+      addBarang = () => {
+        const { nama, harga, stok } = this.state;
+
+        if (!nama || !harga || !stok) {
+          alert('Nama Barang, Harga, dan Stok tidak boleh kosong.');
+          return;
+        }
+
+        const barang = { nama, harga, stok, totalHarga: harga * stok };
+        this.props.onAddBarang(barang);
+
+        // Reset form
+        this.setState({
+          nama: '',
+          harga: '',
+          stok: '',
+        });
+      };
+
+      render() {
+        return (
+          <div className="card">
+            <div className="card-header">Tambah Barang</div>
+            <div className="card-body">
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="namaBarang" className="form-label">
+                    Nama Barang
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="nama"
+                    placeholder="Masukkan nama barang"
+                    value={this.state.nama}
+                    onChange={this.handleInputChange}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="harga" className="form-label">
+                    Harga
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="harga"
+                    placeholder="Masukkan harga barang"
+                    value={this.state.harga}
+                    onChange={this.handleInputChange}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="stok" className="form-label">
+                    Stok
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="stok"
+                    placeholder="Masukkan stok barang"
+                    value={this.state.stok}
+                    onChange={this.handleInputChange}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.addBarang}
+                >
+                  Tambah
+                </button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          daftarBarang: [],
+        };
+      }
+
+      addBarang = (barang) => {
+        this.setState((prevState) => ({
+          daftarBarang: [...prevState.daftarBarang, barang],
+        }));
+      };
+
+      render() {
+        return (
+          <div className="container">
+            <h1 className="mb-3">APLIKASI KASIR ELEKTRONIK</h1>
+            <div className="row">
+              <div className="col-md-6">
+                <Barang onAddBarang={this.addBarang} />
+              </div>
+              <div className="col-md-6">
+                <div className="card">
+                  <div className="card-header">Daftar Barang</div>
+                  <div className="card-body">
+                    <table className="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Nama</th>
+                          <th>Harga</th>
+                          <th>Stok</th>
+                          <th>Total Harga</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.daftarBarang.map((barang, index) => (
+                          <tr key={index} className="text-center">
+                            <td>{barang.nama}</td>
+                            <td>{barang.harga}</td>
+                            <td>{barang.stok}</td>
+                            <td>{barang.totalHarga}</td>
+                            <td>
+                              <button
+                                className="btn btn-warning btn-sm"
+                                onClick={() => this.editBarang(index)}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => this.deleteBarang(index)}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <div className="card">
+                  <div className="card-header">Total Harga</div>
+                  <div className="card-body">
+                    <h4 className="mb-3">Total Harga per Barang:</h4>
+                    {this.state.daftarBarang.map((barang, index) => (
+                      <p key={index}>{`${barang.nama}: ${barang.totalHarga}`}</p>
+                    ))}
+                    <h4 className="mb-3">Jumlah Harga Keseluruhan:</h4>
+                    <p>{this.calculateJumlahHargaKeseluruhan()}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      calculateJumlahHargaKeseluruhan() {
+        return this.state.daftarBarang.reduce(
+          (total, barang) => total + barang.totalHarga,
+          0
+        );
+      }
+
+      editBarang(index) {
+        const namaBaru = prompt('Masukkan nama baru:');
+        const hargaBaru = prompt('Masukkan harga baru:');
+        const stokBaru = prompt('Masukkan stok baru:');
+
+        if (namaBaru !== null && hargaBaru !== null && stokBaru !== null) {
+          const updatedBarang = {
+            nama: namaBaru,
+            harga: Number(hargaBaru),
+            stok: Number(stokBaru),
+            totalHarga: hargaBaru * stokBaru,
+          };
+
+          this.setState((prevState) => {
+            const daftarBarang = [...prevState.daftarBarang];
+            daftarBarang[index] = updatedBarang;
+            return { daftarBarang };
+          });
+        }
+      }
+
+      deleteBarang(index) {
+        const confirmation = confirm('Apakah Anda yakin ingin menghapus barang ini?');
+
+        if (confirmation) {
+          this.setState((prevState) => {
+            const daftarBarang = [...prevState.daftarBarang];
+            daftarBarang.splice(index, 1);
+            return { daftarBarang };
+          });
+        }
+      }
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
